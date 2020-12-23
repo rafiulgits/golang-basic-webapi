@@ -1,13 +1,37 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+)
+
+const (
+	HttpGET    = "GET"
+	HttpPOST   = "POST"
+	HttpPUT    = "PUT"
+	HttpDELETE = "DELETE"
+)
 
 func main() {
 	//inline handler function
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		w.WriteHeader(200)
 		w.Header().Add("Content-Type", "application/json")
-		w.Write([]byte(`{"message" : "hello world"}`))
+		switch req.Method {
+		case HttpGET:
+			w.WriteHeader(200)
+			w.Write([]byte(`{"message" : "data fetch"}`))
+		case HttpPOST:
+			w.WriteHeader(201)
+			w.Write([]byte(`{"message" : "data created"}`))
+		case HttpPUT:
+			w.WriteHeader(200)
+			w.Write([]byte(`{"message" : "data updated"}`))
+		case HttpDELETE:
+			w.WriteHeader(204)
+		default:
+			w.WriteHeader(200)
+			w.Write([]byte(`{"message" : "no methods matched"}`))
+		}
+
 	})
 
 	//passing handler function
